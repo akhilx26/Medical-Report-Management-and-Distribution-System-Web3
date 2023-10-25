@@ -1,12 +1,16 @@
 import React from "react";
-import Model from "react-modal"
+// import Model from "react-modal"
 import { useState, useEffect } from "react";
+import { Web3Button } from '@thirdweb-dev/react'
+import { useContract, useContractRead, useContractWrite } from "@thirdweb-dev/react";
+import { CONTRACT_ADDRESS } from "./constants/address"
+import adddoctor from "../admin-images/remove-doctor.png";
+import removedoctor from "../admin-images/remove1-doctor.png";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const ManDoctors = () => {
 
-    const [visible1, setVisible1] = useState(false)
-    const [visible2, setVisible2] = useState(false)
-    const [actor, setActor] = useState("")
 
     const customStyles = {
         content: {
@@ -24,62 +28,159 @@ const ManDoctors = () => {
         },
     };
 
+    const [addDoctorAddress, setAddDoctorAddress] = useState(''); 
+    const [doctorName, setDoctorName] = useState('');
+    const [doctorAge, setDoctorAge] = useState('');
+    const [doctors, setDoctors] = useState([])
+    const [removeDoctorAddress, setRemoveDoctorAddress] = useState('');
+
+    // const [doctorDetails, setDoctorDetails] = useState(null);
+
+    function resetForm() {
+        setDoctorName('');
+        setAddDoctorAddress(''); 
+        setDoctorAge('');
+        setRemoveDoctorAddress('');
+        // setAddDoctor(false);
+    }
+
+    function alertToast(msg){
+        toast.success(msg)
+    }
+
+    const { contract } = useContract(CONTRACT_ADDRESS);
+    const { data, isLoading } = useContractRead(contract, "showOurDoctors", []);
+    const { mutateAsync: removeDoctor, isLoading: removeDoctorLoading } = useContractWrite(contract, "removeDoctor")
+
+
+    useEffect(() => {
+        if (data) {
+            const formattedDoctors = data.map((doctor) => ({
+                address: doctor.newdocaddress,
+                name: doctor.name,
+                age: doctor.age.toString(),
+            }));
+
+            setDoctors(formattedDoctors);
+        }
+    }, [data]);
+
+    const handleRemoveDoctor = async () => {
+        await removeDoctor({ args: [removeDoctorAddress] });
+        resetForm();
+    }
+
+    
     return(
         <div className="admin-page">
-            <div className="title-admin">
-                <h2 className="welcome-admin">Manage Doctors</h2>
+
+            <div>
+                <header className="header1">
+                    <nav className="navbar">
+                        <a href="/admin" style={{background:"gray", borderRadius:"10px", padding:"5px"}}>Home</a>
+                        <a href="/patients">Manage Patients</a>
+                        <a href="/pathologists">Manage Pathologists</a>
+                        <a href="/pharmacists">Manage Pharmacists</a>
+                    </nav>
+                </header>
             </div>
-            <div className="parent-admin">
-                <div className="mandoc-cards">
-                    <button onClick={(e)=>{
-                        setVisible1(true)
-                        setActor(e.target.innerText)
-                    }}>Add Doctor</button>
-                    <button onClick={(e)=>{
-                        setVisible2(true)
-                        setActor(e.target.innerText)
-                    }}>Remove Doctor</button>
-                    <Model isOpen={visible1} onRequestClose={()=>setVisible1(false)} style={customStyles}>
-                        <button className="close-button" onClick={()=>setVisible1(false)}>X</button>
-                        <div className="popup-content app">
-                            <div className="app-header">
-                                <h4>{actor}</h4>
-                                <form>
-                                    <br/>
-                                    <label for="fname">First name:</label><br/>
-                                    <input type="text" id="fname" name="fname"/><br/>
-                                    <br/>
-                                    <label for="lname">Last name:</label><br/>
-                                    <input type="text" id="lname" name="lname"/><br/>
-                                    <br/>
-                                    <label for="address">Wallet address:</label><br/>
-                                    <input type="text" id="address" name="address"/>
-                                    <br/><br/>
-                                    <input type="submit" value="Submit"></input>
-                                </form>
+        
+            <div className="background"></div>
+
+            <div className="container2">
+                <div className="content2">
+                    <div className="card2">
+                        <img src={adddoctor}></img>
+                        <div className="intro">
+                            <div className="inner-card">
+                                <h4>Add Doctor</h4>
+                                <input
+                                    type='text'
+                                    placeholder='Wallet Address'
+                                    value={addDoctorAddress}
+                                    onChange={(e) => setAddDoctorAddress(e.target.value)}
+                                />
+                                <br/>
+                                <input
+                                    type='text'
+                                    placeholder='Name'
+                                    value={doctorName}
+                                    onChange={(e) => setDoctorName(e.target.value)}
+                                />
+                                <br/>
+                                <input
+                                    type='number'
+                                    placeholder='Age'
+                                    value={doctorAge}
+                                    onChange={(e) => setDoctorAge(e.target.value)}
+                                />
+                                <br/>
+                                <Web3Button
+                                    className="submit-button submit-add"
+                                    contractAddress={CONTRACT_ADDRESS}
+                                    action={(contract) => contract.call(
+                                        "addDoctor",
+                                        [
+                                            addDoctorAddress,
+                                            doctorName,
+                                            doctorAge
+                                        ]
+                                    )}
+                                    onSuccess={() => {
+                                        resetForm()
+                                        // setAddDoctor(false)
+                                        alertToast("Added Doctor Successfully!")
+                                    }}
+                                >
+                                    Add Doctor
+                                </Web3Button>
                             </div>
                         </div>
-                    </Model>
-                    <Model isOpen={visible2} onRequestClose={()=>setVisible2(false)} style={customStyles}>
-                        <button className="close-button" onClick={()=>setVisible2(false)}>X</button>
-                        <div className="popup-content app">
-                            <div className="app-header">
-                                <h4>{actor}</h4>
-                                <form>
-                                    <br/>
-                                    <label for="address">Wallet address:</label><br/>
-                                    <input type="text" id="address" name="address"/>
-                                    <br/><br/>
-                                    <input type="submit" value="Remove Doctor"></input>
-                                </form>
+                    </div>
+
+                    <div className="card2">
+                        <img src={removedoctor}></img>
+                        <div className="intro">
+                            <div className="inner-card">
+                                <h4>Remove Doctor</h4>
+                                <input
+                                    type="text"
+                                    placeholder="Wallet Address"
+                                    value={removeDoctorAddress}
+                                    onChange={(e) => setRemoveDoctorAddress(e.target.value)}
+                                />
+                                <br/>
+                                <Web3Button
+                                    className="submit-button submit-remove"
+                                    contractAddress={CONTRACT_ADDRESS}
+                                    action={handleRemoveDoctor}
+                                    disabled={removeDoctorLoading}
+                                    onSuccess={()=>{
+                                        resetForm()
+                                        alertToast("Removed Doctor Successfully!")
+                                    }}
+                                >
+                                    Remove Doctor
+                                </Web3Button>
                             </div>
                         </div>
-                    </Model>
+                    </div>
+                </div>
+                <div>
+                    {doctors.map((doctor) => (
+                        <div className="list-content" key={doctor.address}>
+                            <div>
+                                <h3 style={{ color: "#222222" }}>Dr. {doctor.name}</h3>
+                            </div>
+                            <div>
+                                <p style={{ color: "#666666" }}>Address: {doctor.address}</p>
+                                <p style={{ color: "#666666" }}>Age: {doctor.age}</p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
-            <div className="quote-div">
-                <p className="admin-quote">~"Health is the greatest of Human Blessings"~</p>
-            </div>
+            <ToastContainer />
         </div>
     );
 }
