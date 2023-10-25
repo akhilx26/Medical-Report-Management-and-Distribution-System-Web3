@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom/client';
 import App from "./App";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 // import './index.css';
+// import "./App2.css";
+// import {BrowserRouter} from "react-router-dom";
 
 
 // This is the chain your dApp will work on.
@@ -19,7 +21,7 @@ root.render(
       clientId={"6337d418fc4e0539a199a96255e817a5"}
       activeChain={activeChain}
     >
-      <App />
+      <App/>
     </ThirdwebProvider>
   </React.StrictMode>
 );
