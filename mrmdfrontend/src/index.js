@@ -1,5 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import ReactDOM from 'react-dom/client';
 import App from "./App";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 // import './index.css';
@@ -10,8 +11,8 @@ import { ThirdwebProvider } from "@thirdweb-dev/react";
 // You can also import additional chains from `@thirdweb-dev/chains` and pass them directly.
 const activeChain = "goerli";
 
-const container = document.getElementById("root");
-const root = createRoot(container);
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <React.StrictMode>
     <ThirdwebProvider
