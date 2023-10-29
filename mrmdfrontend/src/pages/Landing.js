@@ -7,6 +7,7 @@ import {ConnectWallet, connectWallet} from "@thirdweb-dev/react";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import {CONTRACT_ADDRESS} from "./constants/address"
 
 const Landing = () => {
     
@@ -20,12 +21,14 @@ const Landing = () => {
                         <a href="/patient">Patient</a>
                         <a href="/path">Pathologist</a>
                         <a href="/pharm">Pharmacist</a>
+                        <a className="address-tag" href="https://goerli.etherscan.io/address/0x47f7d265BdFE63F52187566c10B1eB5fCC3b89A4" target="_blank"><span className="add-con">Contract: {CONTRACT_ADDRESS}</span></a>
                     </nav>
 
-                    <form action="/" className="search-bar">
-                        <input type="text" placeholder="Search"/>
-                        <button type="submit"><i class='bx bx-search'></i></button>
-                    </form>
+                    {/* <form action="/" className="search-bar"> */}
+                        {/* <input type="text" placeholder="Search"/>
+                        <button type="submit"><i class='bx bx-search'></i></button> */}
+                    {/* <p className="conadd">Contract Address:{CONTRACT_ADDRESS}</p> */}
+                    {/* </form> */}
 
                 </header>
 
@@ -48,8 +51,8 @@ const Landing = () => {
                     <div className="logreg-box">
                         <div className="form-box login">
                             <form action="#">
-                                <div className="input-box">
-                                    <span className="icon"></span>
+                                <div className="input-box1">
+                                    {/* <span className="icon"></span> */}
                                     <ConnectWallet className="connect-wallet"/>
                                 </div>
                             </form>
