@@ -80,13 +80,13 @@ body{
 }
 
 .address-tag{
-    margin-left: 100px;
+    margin-left: 110px;
     /* border: 2px solid #e4e4e4; */
 }
 
 .add-con{
     /* color: #020410; */
-    border: 2px solid #e4e4e4;
+    /* border: 2px solid #e4e4e4; */
     padding: 5px;
     border-radius: 10px;
 }
